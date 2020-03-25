@@ -17,18 +17,17 @@ namespace MyNZBlog.Data
 
         public DbSet<Article> Articles { get; set; }
         public DbSet<ContentTag> ContentTags { get; set; }
-        public DbSet<ArticleHasTag> ArticleHasTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ArticleHasTag>().HasKey(sc => new {articleId = sc.ArticleId, tagId = sc.ContentTagId});
-
+            modelBuilder.Entity<Article>().HasKey(a => a.Id);
+            modelBuilder.Entity<ContentTag>().HasKey(a => a.Id);
             modelBuilder.Entity<ArticleHasTag>()
                 .HasOne<Article>(sc => sc.Article)
                 .WithMany(s => s.ArticleHasTags)
                 .HasForeignKey(sc => sc.ArticleId);
 
-
+            modelBuilder.Entity<Article>()
             modelBuilder.Entity<ArticleHasTag>()
                 .HasOne<ContentTag>(sc => sc.ContentTag)
                 .WithMany(s => s.ArticleHasTags)

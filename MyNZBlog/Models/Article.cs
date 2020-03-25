@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 namespace MyNZBlog.Models
 {
-    public class Article
+    public sealed class Article
     {
+        public Article()
+        {
+            ContentTags = new HashSet<ContentTag>();
+        }
+
         public int Id { get; set; }
         public string Title { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
         public string Content { get; set; }
-        public IList<ArticleHasTag> ArticleHasTags { get; set; }
+        public ICollection<ContentTag> ContentTags { get; set; }
     }
 }

@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 
 namespace MyNZBlog.Models
 {
-    public class ContentTag
+    public sealed class ContentTag
     {
+        public ContentTag()
+        {
+            Articles = new HashSet<Article>();
+        }
         public int Id { get; set; }
         public string Tag { get; set; }
-        public IList<ArticleHasTag> ArticleHasTags { get; set; }
+        public ICollection<Article> Articles { get; set; }
     }
 }
