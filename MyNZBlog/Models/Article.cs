@@ -8,6 +8,10 @@ namespace MyNZBlog.Models
 {
     public class Article
     {
+        public Article()
+        {
+            ArticleHasTags = new List<ArticleHasTag>();
+        }
         public int Id { get; set; }
         public string Title { get; set; }
 

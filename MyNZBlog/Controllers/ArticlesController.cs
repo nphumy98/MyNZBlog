@@ -22,15 +22,18 @@ namespace MyNZBlog.Controllers
         // GET: Articles
         public async Task<IActionResult> Index()
         {
-            List<ContentTag> tags = new List<ContentTag>();
-            var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == id).ToListAsync();
-            foreach (var item in articlesHasTags)
+            var listArticles = await _context.Articles.ToListAsync();
+            foreach (var article in listArticles)
             {
-                var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
-                tags.Add(tag);
+                var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == article.Id).ToListAsync();
+                article.ArticleHasTags = articlesHasTags;
+                foreach (var item in article.ArticleHasTags)
+                {
+                    var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
+                    item.ContentTag = tag;
+                }
             }
-            ViewData["tags"] = tags;
-            return View(await _context.Articles.ToListAsync());
+            return View(listArticles);
         }
 
         // GET: Articles/Details/5
@@ -40,16 +43,16 @@ namespace MyNZBlog.Controllers
             {
                 return NotFound();
             }
-            List<ContentTag> tags = new List<ContentTag>();
-            var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == id).ToListAsync();
-            foreach (var item in articlesHasTags)
-            {
-                var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
-                tags.Add(tag);
-            }
-            ViewData["tags"] = tags;
             var article = await _context.Articles
                 .FirstOrDefaultAsync(m => m.Id == id);
+            var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == id).ToListAsync();
+            article.ArticleHasTags = articlesHasTags;
+            foreach (var item in article.ArticleHasTags)
+            {
+                var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
+                item.ContentTag = tag;
+            }
+
             if (article == null)
             {
                 return NotFound();

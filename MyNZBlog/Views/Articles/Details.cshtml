@@ -4,9 +4,6 @@
     ViewData["Title"] = "Details";
 }
 
-@{
-    List<ContentTag> tags = ViewData["tags"] as List<ContentTag>;
-}  
 <h1>Details</h1>
 
 <div>
@@ -36,11 +33,11 @@
         </dt>
         <dd class="col-sm-10">
 
-            @if (tags != null || tags.Count() > 0)
+            @if (Model != null || Model.ArticleHasTags.Count > 0)
             {
-                foreach (var item in tags)
+                foreach (var item in Model.ArticleHasTags)
                 {
-                    <a href="">@Html.DisplayFor(tag => item.Tag)</a>
+                    <a href="">@Html.DisplayFor(tag => item.ContentTag.Tag)</a>
                 }
             }
             else
