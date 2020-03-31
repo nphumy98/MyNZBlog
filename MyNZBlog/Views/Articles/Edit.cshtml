@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    List<ContentTag> listTag = ViewData["ListTag"] as List<ContentTag>;
 }
 
 <h1>Edit</h1>
@@ -29,8 +30,21 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                @foreach (var item in Model.ArticleHasTags)
+                {
+                    @Html.CheckBox(item.ContentTag.Tag, true)
+                    <label> @Html.DisplayFor(modelItem => item.ContentTag.Tag)</label><br>
+                }
+                @foreach (var item in listTag)
+                {
+                    @Html.CheckBox(item.Tag, false)
+                    <label> @Html.DisplayFor(modelItem => item.Tag)</label><br>
+                }
             </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
         </form>
     </div>
 </div>

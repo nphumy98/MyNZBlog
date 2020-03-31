@@ -45,6 +45,12 @@ namespace MyNZBlog.Controllers
             }
             var article = await _context.Articles
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
             var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == id).ToListAsync();
             article.ArticleHasTags = articlesHasTags;
             foreach (var item in article.ArticleHasTags)
@@ -53,17 +59,14 @@ namespace MyNZBlog.Controllers
                 item.ContentTag = tag;
             }
 
-            if (article == null)
-            {
-                return NotFound();
-            }
-
             return View(article);
         }
 
         // GET: Articles/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var listTag = await _context.ContentTags.ToListAsync();
+            ViewData["ListTag"] = listTag;
             return View();
         }
 
@@ -76,6 +79,23 @@ namespace MyNZBlog.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<ContentTag> contentTags = await _context.ContentTags.ToListAsync();
+                
+                foreach (var item in contentTags)
+                {
+                    string isChecked = Request.Form[item.Tag];
+                    if (isChecked != "false")
+                    {
+                        article.ArticleHasTags.Add(new ArticleHasTag()
+                        {
+                            Article = article,
+                            ArticleId = article.Id,
+                            ContentTag = item,
+                            ContentTagId = item.Id
+                        });
+                    }
+                }
+                
                 _context.Add(article);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -96,6 +116,17 @@ namespace MyNZBlog.Controllers
             {
                 return NotFound();
             }
+            var listTag = await _context.ContentTags.ToListAsync();
+            var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == id).ToListAsync();
+            article.ArticleHasTags = articlesHasTags;
+            foreach (var item in article.ArticleHasTags)
+            {
+                var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
+                listTag.Remove(tag);
+                item.ContentTag = tag;
+            }
+
+            ViewData["ListTag"] = listTag;
             return View(article);
         }
 
@@ -115,6 +146,33 @@ namespace MyNZBlog.Controllers
             {
                 try
                 {
+                    List<ContentTag> contentTags = await _context.ContentTags.ToListAsync();
+
+                    foreach (var item in contentTags)
+                    {
+                        string isChecked = Request.Form[item.Tag];
+                        if (isChecked == "false")
+                        {
+                            ArticleHasTag removedTag = await _context.ArticleHasTags.FindAsync(article.Id, item.Id);
+                            if (removedTag!=null)
+                                _context.ArticleHasTags.Remove(removedTag);
+                        }
+                        else
+                        {
+                            ArticleHasTag addTag = await _context.ArticleHasTags.FindAsync(article.Id, item.Id);
+                            if (addTag == null)
+                            {
+                                addTag = new ArticleHasTag()
+                                {
+                                    Article = article,
+                                    ArticleId = article.Id,
+                                    ContentTag = item,
+                                    ContentTagId = item.Id
+                                };
+                                _context.ArticleHasTags.Add(addTag);
+                            }
+                        }
+                    }
                     _context.Update(article);
                     await _context.SaveChangesAsync();
                 }
@@ -147,6 +205,13 @@ namespace MyNZBlog.Controllers
             if (article == null)
             {
                 return NotFound();
+            }
+            var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == id).ToListAsync();
+            article.ArticleHasTags = articlesHasTags;
+            foreach (var item in article.ArticleHasTags)
+            {
+                var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
+                item.ContentTag = tag;
             }
 
             return View(article);
