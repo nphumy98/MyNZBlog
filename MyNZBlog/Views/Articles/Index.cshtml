@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.ReleaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Content)
+                @Html.Raw(item.Content)
             </td>
             <td>
                 @if (item != null || item.ArticleHasTags.Count > 0)
