@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyNZBlog.Data;
 using MyNZBlog.Models;
+using MyNZBlog.Models.ViewModel;
 
 namespace MyNZBlog.Controllers
 {
@@ -20,9 +21,33 @@ namespace MyNZBlog.Controllers
         }
 
         // GET: Articles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, int? pageSize)
         {
-            var listArticles = await _context.Articles.ToListAsync();
+            if (pageNumber == null ||  pageNumber < 0)
+            {
+                pageNumber = 1;
+            }
+
+            if (pageSize == null || pageSize < 0)
+            {
+                pageSize = 5;
+            }
+
+            int size = _context.Articles.Count();
+            var listArticles = await _context.Articles
+                .OrderByDescending(a => a.ReleaseDate)
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToListAsync();
+
+            ArticleViewModel articleViewModel = new ArticleViewModel()
+            {
+                articles = listArticles,
+                pageNumber = pageNumber.Value,
+                pageSize = pageSize.Value,
+                size = size,
+
+            };
             foreach (var article in listArticles)
             {
                 var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == article.Id).ToListAsync();
@@ -33,8 +58,10 @@ namespace MyNZBlog.Controllers
                     item.ContentTag = tag;
                 }
             }
-            return View(listArticles);
+            return View(articleViewModel);
         }
+
+        [HttpPost]
 
         // GET: Articles/Details/5
         public async Task<IActionResult> Details(int? id)

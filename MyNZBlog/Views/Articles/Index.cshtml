@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyNZBlog.Models.Article>
+﻿@model MyNZBlog.Models.ViewModel.ArticleViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -13,22 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.articles[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+                @Html.DisplayNameFor(model => model.articles[0].ReleaseDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Content)
+                @Html.DisplayNameFor(model => model.articles[0].Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArticleHasTags)
+                @Html.DisplayNameFor(model => model.articles[0].ArticleHasTags)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.articles) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -57,3 +57,13 @@
 }
     </tbody>
 </table>
+
+<div>
+    @{
+        int numberOfPage = Model.size / Model.pageSize +1;
+        for (int i = 1; i <= numberOfPage; i++)
+        {
+        <a asp-action="Index" asp-route-pageNumber="@i">@i |</a>
+        }
+    }
+</div>
