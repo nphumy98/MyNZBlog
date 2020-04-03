@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace MyNZBlog.Controllers
         }
 
         // GET: Articles
+        [Authorize]
         public async Task<IActionResult> Index(int? pageNumber, int? pageSize)
         {
             if (pageNumber == null ||  pageNumber < 0)
