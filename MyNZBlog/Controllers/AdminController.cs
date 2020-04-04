@@ -43,11 +43,11 @@ namespace MyNZBlog.Controllers
                 new Claim(ClaimTypes.Email, "nphumy89@gmail.com")
             };
 
-            var claimIdentities = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimIdentities = new ClaimsIdentity(claims, "CookiesAuth");
 
             var userPrincipal = new ClaimsPrincipal(claimIdentities);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,userPrincipal, new AuthenticationProperties { IsPersistent = userModel.RememberMe });
+            await HttpContext.SignInAsync("CookiesAuth", userPrincipal, new AuthenticationProperties { IsPersistent = userModel.RememberMe });
             return LocalRedirect(userModel.ReturnUrl);
         }
     }

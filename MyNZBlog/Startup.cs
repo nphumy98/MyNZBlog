@@ -28,8 +28,8 @@ namespace MyNZBlog
             services.AddControllersWithViews();
             services.AddDbContext<MyNZBlogContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
-            services.AddAuthentication("Cookies")
-                .AddCookie("Cookies", config =>
+            services.AddAuthentication("CookiesAuth")
+                .AddCookie("CookiesAuth", config =>
                 {
                     config.Cookie.Name = "MyNZBlog.Cookie";
                     config.LoginPath = "/Admin/Login";
