@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyNZBlog.Data;
@@ -11,6 +12,7 @@ using MyNZBlog.Models;
 
 namespace MyNZBlog.Controllers
 {
+    //todo set authentication hander for cookies name string
     public class AdminController : Controller
     {
         private readonly MyNZBlogContext _context;
@@ -33,7 +35,7 @@ namespace MyNZBlog.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login(UserLoginModel userModel)
+        public async Task<IActionResult> Login(UserLoginModel userModel)
         {
             var claims = new List<Claim>()
             {
@@ -41,11 +43,11 @@ namespace MyNZBlog.Controllers
                 new Claim(ClaimTypes.Email, "nphumy89@gmail.com")
             };
 
-            var claimIdentities = new ClaimsIdentity(claims);
+            var claimIdentities = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var userPrincipal = new ClaimsPrincipal(claimIdentities);
 
-            HttpContext.SignInAsync(userPrincipal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,userPrincipal, new AuthenticationProperties { IsPersistent = userModel.RememberMe });
             return LocalRedirect(userModel.ReturnUrl);
         }
     }

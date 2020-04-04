@@ -25,6 +25,7 @@ namespace MyNZBlog.Controllers
         }
 
         // GET: Articles
+        [Authorize]
         public async Task<IActionResult> Index(int? pageNumber, int? pageSize)
         {
             if (pageNumber == null ||  pageNumber < 0)
