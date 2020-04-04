@@ -65,8 +65,6 @@ namespace MyNZBlog.Controllers
             return View(articleViewModel);
         }
 
-        [HttpPost]
-
         // GET: Articles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
