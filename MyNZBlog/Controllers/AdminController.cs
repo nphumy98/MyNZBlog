@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyNZBlog.Data;
 using MyNZBlog.Models;
+using MyNZBlog.Models.ViewModel;
 
 namespace MyNZBlog.Controllers
 {
@@ -37,17 +38,25 @@ namespace MyNZBlog.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(UserLoginModel userModel)
         {
+            User user = _context.User.SingleOrDefault(u =>
+                    u.IsAdmin == true && u.Email == userModel.User.Email && u.Password == userModel.User.Password);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, "My"),
                 new Claim(ClaimTypes.Email, "nphumy89@gmail.com")
             };
-
-            var claimIdentities = new ClaimsIdentity(claims, "CookiesAuth");
+            // the string CookiesAuth is scheme that need to match with AddCookies in 
+            var claimIdentities = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var userPrincipal = new ClaimsPrincipal(claimIdentities);
 
-            await HttpContext.SignInAsync("CookiesAuth", userPrincipal, new AuthenticationProperties { IsPersistent = userModel.RememberMe });
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties { IsPersistent = userModel.RememberMe });
             return LocalRedirect(userModel.ReturnUrl);
         }
     }

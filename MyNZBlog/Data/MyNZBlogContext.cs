@@ -18,7 +18,7 @@ namespace MyNZBlog.Data
         public DbSet<Article> Articles { get; set; }
         public DbSet<ContentTag> ContentTags { get; set; }
         public DbSet<ArticleHasTag> ArticleHasTags { get; set; }
-
+        public DbSet<User> User { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ArticleHasTag>().HasKey(sc => new {articleId = sc.ArticleId, tagId = sc.ContentTagId});

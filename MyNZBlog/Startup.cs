@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,8 +29,11 @@ namespace MyNZBlog
             services.AddControllersWithViews();
             services.AddDbContext<MyNZBlogContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
-            services.AddAuthentication("CookiesAuth")
-                .AddCookie("CookiesAuth", config =>
+            services.AddAuthentication(o => {
+                    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    //o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                })
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
                 {
                     config.Cookie.Name = "MyNZBlog.Cookie";
                     config.LoginPath = "/Admin/Login";
