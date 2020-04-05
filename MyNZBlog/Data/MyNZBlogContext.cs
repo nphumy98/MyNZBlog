@@ -22,6 +22,7 @@ namespace MyNZBlog.Data
         public DbSet<User> User { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);// fix the error The entity type 'IdentityUserLogin<string>' requires a primary key to be defined. If you intended to use a keyless entity type call 'HasNoKey()'.
             modelBuilder.Entity<ArticleHasTag>().HasKey(sc => new {articleId = sc.ArticleId, tagId = sc.ContentTagId});
 
             modelBuilder.Entity<ArticleHasTag>()
