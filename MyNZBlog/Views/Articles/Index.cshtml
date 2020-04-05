@@ -61,7 +61,15 @@
 
 <div>
     @{
-        int numberOfPage = Model.size / Model.pageSize +1;
+        int numberOfPage = 1;
+        if (Model.size % Model.pageSize == 0)
+        {
+            numberOfPage = Model.size / Model.pageSize;
+        }
+        else
+        {
+            numberOfPage = Model.size / Model.pageSize + 1;
+        }
         for (int i = 1; i <= numberOfPage; i++)
         {
         <a asp-action="Index" asp-route-pageNumber="@i">@i |</a>
