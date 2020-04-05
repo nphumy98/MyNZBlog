@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyNZBlog.Models;
 
 namespace MyNZBlog.Data
 {
-    public class MyNZBlogContext : DbContext
+    public class MyNZBlogContext : IdentityDbContext
     {
         //https://blog.stevensanderson.com/2011/01/28/mvcscaffolding-one-to-many-relationships/
         public MyNZBlogContext(DbContextOptions<MyNZBlogContext> options)
