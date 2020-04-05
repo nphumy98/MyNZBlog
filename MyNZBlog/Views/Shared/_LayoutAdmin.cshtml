@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"] - MyNZBlog</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link href="~/site.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-6 titlecol">
+            <span class="title">@ViewData["Title"]</span>           
+        </div>
+        <div class="col-md-4">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <h3>Hi @User.Identity.Name!</h3>
+                <a asp-controller="Admin" asp-action="Logout" class="btn btn-primary">Logout</a>
+            }
+        </div>
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+</div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

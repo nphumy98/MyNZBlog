@@ -15,6 +15,7 @@ using MyNZBlog.Models.ViewModel;
 
 namespace MyNZBlog.Controllers
 {
+    [Authorize]
     public class ArticlesController : Controller
     {
         private readonly MyNZBlogContext _context;
@@ -25,7 +26,6 @@ namespace MyNZBlog.Controllers
         }
 
         // GET: Articles
-        [Authorize]
         public async Task<IActionResult> Index(int? pageNumber, int? pageSize)
         {
             if (pageNumber == null ||  pageNumber < 0)
