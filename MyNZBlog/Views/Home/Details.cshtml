@@ -1,0 +1,22 @@
+﻿@model MyNZBlog.Models.Article
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="content col-sm-8">
+<article class="post">
+        <header class="post-header">
+            <h1><a asp-action="Details" asp-route-id="@Model.Id">@Html.DisplayFor(modelItem => Model.Title)</a></h1>
+        </header>
+        <div class="post-content">
+            <p>@Html.Raw(Model.Content)</p>
+        </div>
+        <footer class="post-footer">
+            <a class="btn btn-success btn-xl" asp-action="Index" asp-route-id="@Model.Id">Home Page</a>
+        </footer>
+    </article>
+    
+
+
+</div>

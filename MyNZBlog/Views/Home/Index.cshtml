@@ -1,8 +1,44 @@
-﻿@{
+﻿@model MyNZBlog.Models.ViewModel.ArticleViewModel
+@{
     ViewData["Title"] = "Home Page";
+    string tagSection = ViewData["TagSection"].ToString();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="content col-sm-8">
+    @foreach (var item in Model.articles)
+    {
+        <article class="post">
+            <header class="post-header">
+                <h1><a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a></h1>
+            </header>
+            <div class="post-content">
+                <p>@Html.Raw(item.Content.Substring(0, 5) + " ...")</p>
+            </div>
+            <footer class="post-footer">
+                <a class="btn btn-success btn-xl" asp-action="Details" asp-route-id="@item.Id">Tiếp tục đọc</a>
+            </footer>
+        </article>
+    }
+        
+
+</div>
+
+
+
+<div>
+    @{
+        int numberOfPage = 1;
+        if (Model.size % Model.pageSize == 0)
+        {
+            numberOfPage = Model.size / Model.pageSize;
+        }
+        else
+        {
+            numberOfPage = Model.size / Model.pageSize + 1;
+        }
+        for (int i = 1; i <= numberOfPage; i++)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@i" asp-route-tagSection ="@tagSection">@i|</a>
+        }
+    }
 </div>
