@@ -4,41 +4,64 @@
     string tagSection = ViewData["TagSection"].ToString();
 }
 
+<div class="row">
+<div class="side-bar col-sm-4">
+    <div class="header-side-bar">Lưu Trữ</div>
+    <ul class="list-side-bar">
+        @foreach (var date in Model.monthYear)
+        {
+            string text = date.Value+"/"+ date.Key.Substring(0, 4);
+            <li>
+                <a asp-action="Index" asp-route-month="@date.Value" asp-route-year="@Int32.Parse(date.Key.Substring(0,4))">@text</a>
+            </li>
+        }
+    </ul>
+</div>
 <div class="content col-sm-8">
     @foreach (var item in Model.articles)
     {
         <article class="post">
             <header class="post-header">
                 <h1><a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a></h1>
+                <p>@Html.DisplayFor(model =>item.ReleaseDate)</p>
             </header>
             <div class="post-content">
-                <p>@Html.Raw(item.Content.Substring(0, 5) + " ...")</p>
+                <p>@Html.Raw(item.Content)</p>
             </div>
             <footer class="post-footer">
+                @if (item != null || item.ArticleHasTags.Count > 0)
+                {
+                    foreach (var articleTag in item.ArticleHasTags)
+                    {
+                        <a href="">@Html.DisplayFor(tag => articleTag.ContentTag.Tag)</a>
+                    }
+                }
+                <br /><br />
                 <a class="btn btn-success btn-xl" asp-action="Details" asp-route-id="@item.Id">Tiếp tục đọc</a>
             </footer>
         </article>
     }
         
-
+    <div>
+        @{
+            int numberOfPage = 1;
+            if (Model.size % Model.pageSize == 0)
+            {
+                numberOfPage = Model.size / Model.pageSize;
+            }
+            else
+            {
+                numberOfPage = Model.size / Model.pageSize + 1;
+            }
+            for (int i = 1; i <= numberOfPage; i++)
+            {
+                <a asp-action="Index" asp-route-pageNumber="@i" asp-route-tagSection ="@tagSection">@i|</a>
+            }
+        }
+    </div>
 </div>
 
 
 
-<div>
-    @{
-        int numberOfPage = 1;
-        if (Model.size % Model.pageSize == 0)
-        {
-            numberOfPage = Model.size / Model.pageSize;
-        }
-        else
-        {
-            numberOfPage = Model.size / Model.pageSize + 1;
-        }
-        for (int i = 1; i <= numberOfPage; i++)
-        {
-            <a asp-action="Index" asp-route-pageNumber="@i" asp-route-tagSection ="@tagSection">@i|</a>
-        }
-    }
+
 </div>

@@ -11,5 +11,6 @@ namespace MyNZBlog.Models.ViewModel
         public int pageNumber { get; set; }
         public int pageSize { get; set; }
         public int size { get; set; }
+        public Dictionary<string, int> monthYear { get; set; }
     }
 }

@@ -23,7 +23,8 @@ namespace MyNZBlog.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int? pageNumber, int? pageSize, string tagSection = "")
+        public async Task<IActionResult> Index(int? pageNumber, int? pageSize, string tagSection = "", int month = 0,
+            int year = 0)
         {
             ViewData["TagSection"] = tagSection;
             if (pageNumber == null || pageNumber < 0)
@@ -40,27 +41,53 @@ namespace MyNZBlog.Controllers
                 .OrderByDescending(a => a.ReleaseDate)
                 .ToListAsync();
 
+            Dictionary<string, int> dates = new Dictionary<string, int>();
             List<Article> removedArticles = new List<Article>();
             foreach (var article in listArticles)
             {
+                if (!dates.ContainsKey(article.ReleaseDate.Year.ToString() + article.ReleaseDate.Month))
+                {
+                    dates.Add(article.ReleaseDate.Year.ToString() + article.ReleaseDate.Month, article.ReleaseDate.Month);
+                }
+                if (month >= 0 &&
+                    month <= 12 &&
+                    year <= listArticles[0].ReleaseDate.Year &&
+                    year >= listArticles[listArticles.Count - 1].ReleaseDate.Year)
+                {
+                    if (article.ReleaseDate.Month != month || article.ReleaseDate.Year != year)
+                    {
+                        removedArticles.Add(article);
+                        continue;
+                    }
+                }
                 var articlesHasTags = await _context.ArticleHasTags.Where(a => a.ArticleId == article.Id).ToListAsync();
                 article.ArticleHasTags = articlesHasTags;
+                
+               
                 if (tagSection == "job" && articlesHasTags.Count == 0)
                 {
                     removedArticles.Add(article);
+                    continue;
                 }
+
+                bool isJobKeep = false;
                 foreach (var item in article.ArticleHasTags)
                 {
                     var tag = await _context.ContentTags.FirstOrDefaultAsync(a => a.Id == item.ContentTagId);
                     item.ContentTag = tag;
-                    if (tagSection == "job" && item.ContentTag.Tag != "IT career")
+                    if (tagSection == "job" && item.ContentTag.Tag == "IT career")
                     {
-                        removedArticles.Add(article);
+                        isJobKeep = true;
                     }
                     else if (tagSection == "no-job" && item.ContentTag.Tag == "IT career")
                     {
                         removedArticles.Add(article);
                     }
+                }
+
+                if (tagSection == "job" && !isJobKeep)
+                {
+                    removedArticles.Add(article);
                 }
             }
 
@@ -78,7 +105,7 @@ namespace MyNZBlog.Controllers
                 pageNumber = pageNumber.Value,
                 pageSize = pageSize.Value,
                 size = size,
-
+                monthYear = dates
             };
             
             return View(articleViewModel);
