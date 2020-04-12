@@ -8,13 +8,22 @@
 <article class="post">
         <header class="post-header">
             <h1><a asp-action="Details" asp-route-id="@Model.Id">@Html.DisplayFor(modelItem => Model.Title)</a></h1>
+            <p>@Html.DisplayFor(model =>model.ReleaseDate)</p>
         </header>
         <div class="post-content">
             <p>@Html.Raw(Model.Content)</p>
         </div>
-        <footer class="post-footer">
-            <a class="btn btn-success btn-xl" asp-action="Index" asp-route-id="@Model.Id">Home Page</a>
-        </footer>
+    <footer class="post-footer">
+        @if (Model != null || Model.ArticleHasTags.Count > 0)
+        {
+            foreach (var articleTag in Model.ArticleHasTags)
+            {
+                <a href="">@Html.DisplayFor(tag => articleTag.ContentTag.Tag)</a>
+            }
+        }
+        <br /><br />
+        <a class="btn btn-success btn-xl" asp-action="Index" asp-route-id="@Model.Id">Home Page</a>
+    </footer>
     </article>
     
 
