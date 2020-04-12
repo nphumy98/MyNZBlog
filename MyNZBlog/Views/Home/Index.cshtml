@@ -2,8 +2,16 @@
 @{
     ViewData["Title"] = "Home Page";
     string tagSection = ViewData["TagSection"].ToString();
+    string searchString = ViewData["SearchString"].ToString();
+    int month = Int32.Parse(ViewData["Month"].ToString());
+    int year = Int32.Parse(ViewData["Year"].ToString());
 }
-
+<form asp-controller="Home" asp-action="Index" method="get">
+    <p>
+        Title: <input type="text" name="SearchString">
+        <input type="submit" value="Filter" />
+    </p>
+</form>
 <div class="row">
 <div class="side-bar col-sm-4">
     <div class="header-side-bar">Lưu Trữ</div>
@@ -55,7 +63,8 @@
             }
             for (int i = 1; i <= numberOfPage; i++)
             {
-                <a asp-action="Index" asp-route-pageNumber="@i" asp-route-tagSection ="@tagSection">@i|</a>
+                <a asp-action="Index" asp-route-pageNumber="@i" asp-route-tagSection ="@tagSection" asp-route-searchString ="@searchString"
+                   asp-route-month="@month" asp-route-year="@year">@i|</a>
             }
         }
     </div>

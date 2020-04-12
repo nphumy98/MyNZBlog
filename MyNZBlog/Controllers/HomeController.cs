@@ -24,9 +24,12 @@ namespace MyNZBlog.Controllers
         }
 
         public async Task<IActionResult> Index(int? pageNumber, int? pageSize, string tagSection = "", int month = 0,
-            int year = 0)
+            int year = 0, string searchString="")
         {
             ViewData["TagSection"] = tagSection;
+            ViewData["SearchString"] = searchString;
+            ViewData["Month"] = month;
+            ViewData["Year"] = year;
             if (pageNumber == null || pageNumber < 0)
             {
                 pageNumber = 1;
@@ -96,6 +99,11 @@ namespace MyNZBlog.Controllers
                 listArticles.Remove(article);
             }
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                listArticles = listArticles.Where(a => a.Title.Contains(searchString)).ToList();
+            }
+                
             int size = listArticles.Count;
             listArticles = listArticles.AsEnumerable().Skip((pageNumber.Value - 1) * pageSize.Value)
                 .Take(pageSize.Value).ToList();
@@ -114,32 +122,37 @@ namespace MyNZBlog.Controllers
         /*
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index([Bind("Id,Title,ReleaseDate,Content")] Article article)
+        public async Task<IActionResult> Index(string searchString)
         {
+            ArticleViewModel articleViewModel = new ArticleViewModel();
             if (ModelState.IsValid)
             {
-                List<ContentTag> contentTags = await _context.ContentTags.ToListAsync();
+                var articles = from m in _context.Articles
+                               select m;
 
-                foreach (var item in contentTags)
+                if (!String.IsNullOrEmpty(searchString))
                 {
-                    string isChecked = Request.Form[item.Tag];
-                    if (isChecked != "false")
-                    {
-                        article.ArticleHasTags.Add(new ArticleHasTag()
-                        {
-                            Article = article,
-                            ArticleId = article.Id,
-                            ContentTag = item,
-                            ContentTagId = item.Id
-                        });
-                    }
+                    articles = articles.Where(s => s.Title.Contains(searchString));
                 }
 
-                _context.Add(article);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(article);
+                var listArticles = await articles.ToListAsync();
+
+                articleViewModel = new ArticleViewModel()
+                {
+                    articles = listArticles,
+                };
+                
+                var articles = await _context.Articles
+                    .OrderByDescending(a => a.ReleaseDate)
+                    .ToListAsync();
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    articles = articles.Where(a => a.Title.Contains(searchString) = true);
+                }
+                
+    }
+            return View(articleViewModel);
         }
         */
         public async Task<IActionResult> Details(int? id)
