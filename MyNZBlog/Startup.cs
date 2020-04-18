@@ -27,8 +27,17 @@ namespace MyNZBlog
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<MyNZBlogContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                services.AddDbContext<MyNZBlogContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
+            }
+            else
+            {
+                services.AddDbContext<MyNZBlogContext>(options =>
+                    options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
+            }
+                
             services.AddAuthentication(o => {
                     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     //o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
