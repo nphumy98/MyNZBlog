@@ -35,7 +35,8 @@ namespace MyNZBlog
             else
             {
                 services.AddDbContext<MyNZBlogContext>(options =>
-                    options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
+                    //options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
             }
                 
             services.AddAuthentication(o => {
