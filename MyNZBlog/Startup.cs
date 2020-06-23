@@ -32,11 +32,16 @@ namespace MyNZBlog
                 services.AddDbContext<MyNZBlogContext>(options =>
                   options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
             }
-            else
+            else if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Local")
             {
                 services.AddDbContext<MyNZBlogContext>(options =>
-                  options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
-                //options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
+                  //options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
+            }
+            else
+            { // intend to delete , need to find the way set up aspcore environment to production or development
+                services.AddDbContext<MyNZBlogContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
             }
                 
             services.AddAuthentication(o => {
