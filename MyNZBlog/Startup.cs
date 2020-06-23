@@ -30,13 +30,13 @@ namespace MyNZBlog
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 services.AddDbContext<MyNZBlogContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
+                  options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
             }
             else
             {
                 services.AddDbContext<MyNZBlogContext>(options =>
-                    //options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
-                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
+                  options.UseSqlServer(Configuration.GetConnectionString("MyNZBlogContext")));
+                //options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MyNZBlogContext-1;Trusted_Connection=True;MultipleActiveResultSets=true"));
             }
                 
             services.AddAuthentication(o => {

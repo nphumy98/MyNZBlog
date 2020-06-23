@@ -5,27 +5,50 @@
 }
 
 <div class="content col-sm-8">
-<article class="post">
+    <article class="post">
         <header class="post-header">
             <h1><a asp-action="Details" asp-route-id="@Model.Id">@Html.DisplayFor(modelItem => Model.Title)</a></h1>
-            <p>@Html.DisplayFor(model =>model.ReleaseDate)</p>
+            <p>@Html.DisplayFor(model => model.ReleaseDate)</p>
         </header>
         <div class="post-content">
             <p>@Html.Raw(Model.Content)</p>
         </div>
-    <footer class="post-footer">
-        @if (Model != null || Model.ArticleHasTags.Count > 0)
-        {
-            foreach (var articleTag in Model.ArticleHasTags)
+        <footer class="post-footer">
+            @if (Model != null || Model.ArticleHasTags.Count > 0)
             {
-                <a href="">@Html.DisplayFor(tag => articleTag.ContentTag.Tag)</a>
+                foreach (var articleTag in Model.ArticleHasTags)
+                {
+                    <a href="">@Html.DisplayFor(tag => articleTag.ContentTag.Tag)</a>
+                }
             }
-        }
-        <br /><br />
-        <a class="btn btn-success btn-xl" asp-action="Index" asp-route-id="@Model.Id">Home Page</a>
-    </footer>
+            <br /><br />
+            <a class="btn btn-success btn-xl" asp-action="Index" asp-route-id="@Model.Id">Home Page</a>
+        </footer>
     </article>
-    
+
 
 
 </div>
+
+
+<div id="disqus_thread"></div>
+@section Scripts
+{
+    <script>
+
+        /**
+        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+        var disqus_config = function () {
+            this.page.url = "https://mynzblog.azurewebsites.net/Home/Details/"+@Model.Id;  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = @Model.Id; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function () { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://mynzblog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+}
